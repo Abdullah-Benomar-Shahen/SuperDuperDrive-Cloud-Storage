@@ -8,7 +8,10 @@ public interface UserMapper {
 
     // SELECTS
     @Select("SELECT * FROM USERS WHERE username = #{username}")
-    User getUser(String username);
+    User getUserByUsername(String username);
+
+    @Select("SELECT * FROM USERS WHERE userid = #{userid}")
+    User getUserById(Integer userid);
 
     // INSERTS
     @Insert("INSERT INTO USERS (username, salt, password, firstname, lastname) VALUES (#{username}, #{salt}, #{password}, #{firstname}, #{lastname})")
@@ -17,5 +20,5 @@ public interface UserMapper {
 
     // DELETE
     @Delete("DELETE FROM USERS WHERE id = #{id}")
-    void deleteUser(int id);
+    void deleteUser(Integer id);
 }
