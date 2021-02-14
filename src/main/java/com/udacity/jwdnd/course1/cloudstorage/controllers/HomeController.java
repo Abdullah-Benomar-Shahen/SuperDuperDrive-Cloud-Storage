@@ -1,9 +1,13 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
+import com.udacity.jwdnd.course1.cloudstorage.models.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.models.File;
+import com.udacity.jwdnd.course1.cloudstorage.models.Note;
 import com.udacity.jwdnd.course1.cloudstorage.models.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
+import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,25 +19,39 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
-    private Logger logger = LoggerFactory.getLogger(HomeController.class);
-
     private final UserService userService;
+    private final FileService fileService;
+    private final CredentialService credentialService;
+    private final NoteService noteService;
 
-    public HomeController(UserService userService) {
+    public HomeController(UserService userService, FileService fileService, CredentialService credentialService, NoteService noteService) {
         this.userService = userService;
+        this.fileService = fileService;
+        this.credentialService = credentialService;
+        this.noteService = noteService;
     }
 
     @GetMapping("/home")
-    public String getHomepage(){
-        // TODO: Check if User is Authenticated
+    public String getHomepage(
+            @ModelAttribute("credential") Credential credential,
+            @ModelAttribute("note") Note note,
+            @ModelAttribute("file") File file,
+            Authentication authentication,
+            Model model
+    ){
+        String usernameOfCurrentUser = (String) authentication.getPrincipal();
+        Integer idOfCurrentUser = this.userService.getUserID(usernameOfCurrentUser);
+
+        model.addAttribute("noteList", this.noteService.getAllUserNotes(idOfCurrentUser));
+        model.addAttribute("credentialList", this.credentialService.getAllUserCredentials(idOfCurrentUser));
+        model.addAttribute("fileList", this.fileService.getAllUserFiles(idOfCurrentUser));
+
         return "Home";
     }
 
 
     @GetMapping("/login")
     public String getLoginPage(@ModelAttribute("user") User user, @RequestParam(required = false, name = "error") Boolean error, @RequestParam(required = false, name = "loggedOut") Boolean loggedOut, Model model){
-        if(user != null)
-            logger.debug("Received user info from Login Form: ".concat(user.toString()));
 
         Boolean errorOccurred = error != null && error;
         Boolean isLoggedOut = loggedOut != null && loggedOut;
@@ -49,9 +67,6 @@ public class HomeController {
     @GetMapping("/signup")
     public String signupForm(@ModelAttribute("user") User user, Model model) {
 
-        if(user != null)
-            logger.debug("Received user info from Signup Form: ".concat(user.toString()));
-
         model.addAttribute("toSignUp", true);
         model.addAttribute("signupDoneSuccessfully", false);
         model.addAttribute("errorOccurred", false);
@@ -61,8 +76,6 @@ public class HomeController {
 
     @PostMapping("/signup")
     public String signupSubmit(@ModelAttribute("user") User user, Model model){
-
-        logger.debug("Received user info from get Signup Form: ".concat(user.toString()));
 
         if (!userService.isUsernameAvailable(user.getUsername())){
             model.addAttribute("toSignUp", true);
