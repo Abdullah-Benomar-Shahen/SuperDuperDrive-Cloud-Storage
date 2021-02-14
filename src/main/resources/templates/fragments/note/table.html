@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <thead th:fragment="head">
+            <tr>
+                <th scope="col" style="width: 20%"></th>
+                <th scope="col" style="width: 20%">Title</th>
+                <th scope="col" style="width: 60%">Description</th>
+            </tr>
+        </thead>
+        <td th:fragment="button-group">
+            <button class="btn btn-success" th:onclick="editNote([[${note}]])" type="button">Edit</button>
+            <a class="btn btn-danger" th:href="@{/notes/note?noteid={noteid}(noteid=${note.noteid})}">Delete</a>
+        </td>
+    </body>
+</html>
