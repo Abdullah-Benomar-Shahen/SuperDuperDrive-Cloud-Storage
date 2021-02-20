@@ -15,7 +15,7 @@
         <div th:if="${errorOccurred}" class="alert alert-danger" id="invalidMessage">
             Invalid username or password
         </div>
-        <div class="alert alert-dark" th:if="${isLoggedOut}">
+        <div class="alert alert-dark" id="validLogoutMessage" th:if="${isLoggedOut}">
             You have been logged out
         </div>
         <div class="form-group">
@@ -32,7 +32,7 @@
     </form>
 
     <div class="form-group" style="margin-top: 0.5em;">
-        <label><a th:href="@{/signup}">Click here to sign up</a></label>
+        <label><a id="goToSignup" th:href="@{/signup}">Click here to sign up</a></label>
     </div>
 </div>
 </body>
