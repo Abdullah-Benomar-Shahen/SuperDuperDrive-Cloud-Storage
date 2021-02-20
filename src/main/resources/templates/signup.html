@@ -14,15 +14,11 @@
             </div>
 
             <h1 class="display-5">Sign Up</h1>
-            <div class="alert alert-success" th:if="${not toSignUp} and ${signupDoneSuccessfully}">
-                You successfully signed up! Please continue to the
-                <a th:href="@{/login}" id="to-login-page">
-                    login
-                </a>
-                page.
+            <div class="alert alert-success" id="successMsg" th:if="${not toSignUp} and ${signupDoneSuccessfully}">
+                You successfully signed up! Please continue to the <a id="toLoginPage" th:href="@{/login}">login</a> page.
             </div>
             <div class="alert alert-danger" th:if="${errorOccurred}">
-                <span>user or username already exists. Please try again.</span>
+                <span id="errorMsg">user or username already exists. Please try again.</span>
             </div>
             <form th:object="${user}" th:action="@{/signup}" th:if="${toSignUp}" action="#" method="POST">
             <div class="form-row">
