@@ -4,17 +4,21 @@ import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.HomePage;
 import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class AccessUserTest {
     @LocalServerPort
     private int port;
@@ -160,7 +164,7 @@ public class AccessUserTest {
             loginPage.clickLoginButton();
         });
 
-        this.driverWait.until(ExpectedConditions.titleContains("Login"));
+        this.driverWait.until(ExpectedConditions.titleContains("Home"));
     }
 
 

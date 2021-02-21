@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -22,23 +23,22 @@ public class HomePage {
     @FindBy(id = "credential-creation-btn")
     private WebElement createNewCredentialButton;
 
+    private final WebDriver driver;
+
     public HomePage(WebDriver webDriver){
+        this.driver = webDriver;
         PageFactory.initElements(webDriver, this);
     }
-
     public void navigateToNotes(){
-        this.navNoteTab.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", navNoteTab);
     }
-
     public void navigateToCredentials(){
-        this.navCredentialsTab.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", navCredentialsTab);
     }
-
     public void createNewNote(){
-        this.createNewCredentialButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createNewCredentialButton);
     }
-
     public void clickLogout(){
-        this.logoutButton.click();
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", logoutButton);
     }
 }

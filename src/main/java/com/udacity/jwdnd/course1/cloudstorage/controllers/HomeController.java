@@ -46,7 +46,7 @@ public class HomeController {
         model.addAttribute("credentialList", this.credentialService.getAllUserCredentials(idOfCurrentUser));
         model.addAttribute("fileList", this.fileService.getAllUserFiles(idOfCurrentUser));
 
-        return "Home";
+        return "home";
     }
 
 
@@ -61,7 +61,7 @@ public class HomeController {
         model.addAttribute("toLogin", true);
         model.addAttribute("loggedInSuccessfully", false);
 
-        return "Login";
+        return "login";
     }
 
     @GetMapping("/signup")
@@ -88,7 +88,7 @@ public class HomeController {
             userService.createUser(user);
         }
 
-        return "Signup";
+        return "signup";
     }
 
     @GetMapping("/logout")
