@@ -122,7 +122,6 @@ public class AccessUserTest {
         this.driverWait.until(ExpectedConditions.titleContains("Home"));
         homePage = new HomePage(driver);
         Assertions.assertEquals("Home", driver.getTitle());
-        // TODO: LOGOUT IS NOT WORKING!! FIX IT
         this.driverWait.until(ExpectedConditions.elementToBeClickable(By.id("logoutBtn")));
         homePage.clickLogout();
         this.driverWait.until(ExpectedConditions.titleContains("Login"));
@@ -144,7 +143,7 @@ public class AccessUserTest {
         signupPage.submitForm();
         this.driverWait.until(ExpectedConditions.elementToBeClickable(signupPage.getLoginLink()));
         Assertions.assertEquals("You successfully signed up! Please continue to the login page.", signupPage.getSuccessMsg());
-        signupPage.goToLogin(); //TODO: Works on time and it does not ten other times??? FIX IT
+        signupPage.goToLogin();
 
         this.driverWait.until(ExpectedConditions.titleContains("Login"));
         Assertions.assertEquals("Login", driver.getTitle());

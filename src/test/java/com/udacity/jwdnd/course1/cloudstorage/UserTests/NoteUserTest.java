@@ -6,15 +6,23 @@ import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
+
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class NoteUserTest {
     @LocalServerPort
     private int port;
@@ -46,29 +54,104 @@ public class NoteUserTest {
 
     @Test
     @Order(1)
-    public void createNewNote(){
+    public void createAndUpdateNote(){
         this.driver.get("http://localhost:" + this.port + "/home");
+        Assertions.assertEquals("Home", driver.getTitle());
 
+        // CREATE NOTE
         homePage = new HomePage(driver);
         homePage.navigateToNotes();
+        homePage.createNewNote();
+        homePage.setNoteTitleField("TEST NOTE");
+        homePage.setNoteDescriptionField("THI IS TEST NOTE!");
+        homePage.clickNoteSubmit();
+
+        Assertions.assertEquals("Result", driver.getTitle());
+        homePage.clickGoBackHome();
+
+        Assertions.assertEquals("Home", driver.getTitle());
+        homePage.navigateToNotes();
+
+        List<WebElement> rows = driver.findElements(By.cssSelector("[class='note-elements']"));
+        Assertions.assertEquals(1, rows.size());
     }
+
 
     @Test
     @Order(2)
     public void updateNote(){
+        this.driver.get("http://localhost:" + this.port + "/home");
+        Assertions.assertEquals("Home", driver.getTitle());
 
+        // CREATE NOTE
+        homePage = new HomePage(driver);
+        homePage.navigateToNotes();
+        homePage.createNewNote();
+        homePage.setNoteTitleField("TEST NOTE");
+        homePage.setNoteDescriptionField("THI IS TEST NOTE!");
+        homePage.clickNoteSubmit();
+
+        Assertions.assertEquals("Result", driver.getTitle());
+        homePage.clickGoBackHome();
+
+        Assertions.assertEquals("Home", driver.getTitle());
+        homePage.navigateToNotes();
+
+        List<WebElement> rows = driver.findElements(By.cssSelector("[class='note-elements']"));
+        String c = rows.get(0).getText();
+        System.out.println("CURRENT NOTE: " + c);
+        Assertions.assertEquals(1, rows.size());
+
+        // UPDATE NOTE
+        homePage.clickNoteEdit();
+        homePage.setNoteTitleField("TEST NOTE EDITED");
+        homePage.clickNoteSubmit();
+        homePage.clickGoBackHome();
+        homePage.navigateToNotes();
+
+        // FIXME: CHANGES AFTER UPDATE ARE NOT DISPLAYED
+        //List<WebElement> elements = driver.findElements(By.id("note-element-title"));
+
+        //Assertions.assertEquals("TEST NOTE EDITED", );
+
+        //Assertions.assertEquals();
     }
 
     @Test
-    @Order(1)
+    @Order(3)
     public void deleteNote(){
+        this.driver.get("http://localhost:" + this.port + "/home");
+        Assertions.assertEquals("Home", driver.getTitle());
 
+        // CREATE NOTE
+        homePage = new HomePage(driver);
+        homePage.navigateToNotes();
+        homePage.createNewNote();
+        homePage.setNoteTitleField("TEST NOTE");
+        homePage.setNoteDescriptionField("THI IS TEST NOTE!");
+        homePage.clickNoteSubmit();
+
+        Assertions.assertEquals("Result", driver.getTitle());
+        homePage.clickGoBackHome();
+
+        Assertions.assertEquals("Home", driver.getTitle());
+        homePage.navigateToNotes();
+
+        List<WebElement> rows = this.driver.findElements(By.cssSelector("[class='note-elements']"));
+        Assertions.assertEquals(1, rows.size());
+
+        // DELETE THE CREATED NOTE
+        homePage.clickNoteDelete();
+
+        List<WebElement> rowsAfterDelete = this.driver.findElements(By.cssSelector("[class='note-elements']"));
+        Assertions.assertEquals(0, rowsAfterDelete.size());
     }
 
     private void signupAndLogin(){
         this.signupProcess();
         this.loginProcess();
     }
+
     private void signupProcess(){
         String username = "TEST_USER";
         String password = "Pa$$w0rd";
@@ -103,6 +186,6 @@ public class NoteUserTest {
             loginPage.clickLoginButton();
         });
 
-        this.driverWait.until(ExpectedConditions.titleContains("Login"));
+        this.driverWait.until(ExpectedConditions.titleContains("Home"));
     }
 }

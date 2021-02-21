@@ -9,8 +9,8 @@
             </tr>
         </thead>
         <td th:fragment="button-group">
-            <button class="btn btn-success" th:onclick="editNote([[${note}]])" type="button">Edit</button>
-            <a class="btn btn-danger" th:href="@{/notes/note?noteid={noteid}(noteid=${note.noteid})}">Delete</a>
+            <button class="btn btn-success" id="note-edit-btn" th:onclick="editNote([[${note}]])" type="button">Edit</button>
+            <a class="btn btn-danger" id="note-delete-btn" th:href="@{/notes/note?noteid={noteid}(noteid=${note.noteid})}">Delete</a>
         </td>
     </body>
 </html>

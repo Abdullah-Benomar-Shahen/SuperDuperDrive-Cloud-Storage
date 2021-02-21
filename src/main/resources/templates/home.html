@@ -33,8 +33,8 @@
                                 <tbody>
                                 <tr class="note-elements" th:each="note: ${noteList}">
                                     <div th:replace="fragments/note/table :: button-group"></div>
-                                    <th th:text="${note.notetitle}" />
-                                    <td th:text="${note.notedescription}" />
+                                    <th id="note-element-title" th:text="${note.notetitle}" />
+                                    <td id="note-element-description" th:text="${note.notedescription}" />
                                 </tr>
                                 </tbody>
                             </table>
