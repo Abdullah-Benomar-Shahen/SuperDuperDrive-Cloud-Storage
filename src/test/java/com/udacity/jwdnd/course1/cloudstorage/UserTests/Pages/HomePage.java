@@ -35,14 +35,35 @@ public class HomePage {
     @FindBy(id = "note-description")
     private WebElement noteDescriptionField;
 
+    @FindBy(id = "credential-url")
+    private WebElement credentialUrlField;
+
+    @FindBy(id = "credential-username")
+    private WebElement credentialUsernameField;
+
+    @FindBy(id = "credential-password")
+    private WebElement credentialPasswordField;
+
     @FindBy(id = "noteSubmit")
     private WebElement noteSubmitButton;
+
+    @FindBy(id = "credentialSubmit")
+    private WebElement credentialSubmitButton;
 
     @FindBy(id = "note-delete-btn")
     private WebElement noteDeleteButton;
 
     @FindBy(id = "note-edit-btn")
     private WebElement noteEditButton;
+
+    @FindBy(id = "credential-delete-btn")
+    private WebElement credentialDeleteButton;
+
+    @FindBy(id = "credential-edit-btn")
+    private WebElement credentialEditButton;
+
+    @FindBy(id = "note-element-title")
+    private WebElement noteTitleText;
 
     private final WebDriver driver;
 
@@ -59,6 +80,10 @@ public class HomePage {
     }
 
     public void createNewNote(){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createNewNoteButton);
+    }
+
+    public void createNewCredential(){
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", createNewCredentialButton);
     }
 
@@ -74,6 +99,10 @@ public class HomePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", noteSubmitButton);
     }
 
+    public void clickCredentialSubmit(){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", credentialSubmitButton);
+    }
+
     public void clickNoteEdit(){
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", noteEditButton);
     }
@@ -82,11 +111,31 @@ public class HomePage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", noteDeleteButton);
     }
 
+    public void clickCredentialEdit(){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", credentialEditButton);
+    }
+
+    public void clickCredentialDelete(){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", credentialDeleteButton);
+    }
+
     public void setNoteTitleField(String title){
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + title + "';", noteTitleField);
     }
 
     public void setNoteDescriptionField(String description){
         ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + description + "';", noteDescriptionField);
+    }
+
+    public void setCredentialUrlField(String url){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + url + "';", credentialUrlField);
+    }
+
+    public void setCredentialUsernameField(String username){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + username + "';", credentialUsernameField);
+    }
+
+    public void setCredentialPasswordField(String pass){
+        ((JavascriptExecutor) driver).executeScript("arguments[0].value='" + pass + "';", credentialPasswordField);
     }
 }

@@ -28,13 +28,13 @@
                         </button>
 
                         <div class="table-responsive">
-                            <table class="table table-striped" id="userTable">
+                            <table class="table table-striped" id="notesTable">
                                 <div th:replace="fragments/note/table :: head"></div>
                                 <tbody>
                                 <tr class="note-elements" th:each="note: ${noteList}">
                                     <div th:replace="fragments/note/table :: button-group"></div>
-                                    <th id="note-element-title" th:text="${note.notetitle}" />
-                                    <td id="note-element-description" th:text="${note.notedescription}" />
+                                    <th th:text="${note.notetitle}" />
+                                    <td th:text="${note.notedescription}" />
                                 </tr>
                                 </tbody>
                             </table>

@@ -27,7 +27,6 @@ public class AccessUserTest {
     private WebDriverWait driverWait;
     private LoginPage loginPage;
     private SignupPage signupPage;
-    private HomePage homePage;
 
     @BeforeAll
     static void beforeAll() {
@@ -120,7 +119,7 @@ public class AccessUserTest {
         this.loginProcess();
 
         this.driverWait.until(ExpectedConditions.titleContains("Home"));
-        homePage = new HomePage(driver);
+        HomePage homePage = new HomePage(driver);
         Assertions.assertEquals("Home", driver.getTitle());
         this.driverWait.until(ExpectedConditions.elementToBeClickable(By.id("logoutBtn")));
         homePage.clickLogout();

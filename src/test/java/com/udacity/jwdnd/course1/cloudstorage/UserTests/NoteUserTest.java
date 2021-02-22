@@ -6,7 +6,6 @@ import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -29,8 +28,6 @@ public class NoteUserTest {
 
     private WebDriver driver;
     private WebDriverWait driverWait;
-    private LoginPage loginPage;
-    private SignupPage signupPage;
     private HomePage homePage;
 
     @BeforeAll
@@ -54,7 +51,7 @@ public class NoteUserTest {
 
     @Test
     @Order(1)
-    public void createAndUpdateNote(){
+    public void createNote(){
         this.driver.get("http://localhost:" + this.port + "/home");
         Assertions.assertEquals("Home", driver.getTitle());
 
@@ -98,23 +95,19 @@ public class NoteUserTest {
         homePage.navigateToNotes();
 
         List<WebElement> rows = driver.findElements(By.cssSelector("[class='note-elements']"));
-        String c = rows.get(0).getText();
-        System.out.println("CURRENT NOTE: " + c);
         Assertions.assertEquals(1, rows.size());
 
         // UPDATE NOTE
         homePage.clickNoteEdit();
+        this.driverWait.until(ExpectedConditions.elementToBeClickable(By.id("note-title")));
+        this.driver.findElement(By.id("note-title")).clear();
         homePage.setNoteTitleField("TEST NOTE EDITED");
         homePage.clickNoteSubmit();
         homePage.clickGoBackHome();
         homePage.navigateToNotes();
 
-        // FIXME: CHANGES AFTER UPDATE ARE NOT DISPLAYED
-        //List<WebElement> elements = driver.findElements(By.id("note-element-title"));
-
-        //Assertions.assertEquals("TEST NOTE EDITED", );
-
-        //Assertions.assertEquals();
+        WebElement updatedNoteTitle = this.driver.findElement(By.xpath("//*[@id=\"notesTable\"]/tbody/tr/th"));
+        Assertions.assertEquals("TEST NOTE EDITED", updatedNoteTitle.getAttribute("innerText"));
     }
 
     @Test
@@ -159,7 +152,7 @@ public class NoteUserTest {
         driver.get("http://localhost:" + this.port + "/signup");
         Assertions.assertEquals("Sign Up", driver.getTitle());
 
-        signupPage = new SignupPage(driver);
+        SignupPage signupPage = new SignupPage(driver);
         signupPage.setInputFirstName("TestFirstName");
         signupPage.setInputLastName("TestLastName");
         signupPage.setInputUsername(username);
@@ -179,7 +172,7 @@ public class NoteUserTest {
         driver.get("http://localhost:" + this.port + "/login");
         Assertions.assertEquals("Login", driver.getTitle());
 
-        loginPage = new LoginPage(driver);
+        LoginPage loginPage = new LoginPage(driver);
         Assertions.assertDoesNotThrow(() ->{
             loginPage.setUsernameField(username);
             loginPage.setPasswordField(password);
