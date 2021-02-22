@@ -5,7 +5,6 @@ import com.udacity.jwdnd.course1.cloudstorage.models.Credential;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -28,22 +27,7 @@ public class CredentialService {
      * @return the all user credentials
      */
     public List<Credential> getAllUserCredentials(Integer userID) {
-
-        List<Credential> savedUserCredentials = this.credentialMapper.getCredentialsByUsername(userID); // This is what we get from the DB
-        List<Credential> userCredentials = new ArrayList<>(); // This is what we return
-
-        for (Credential singleCredential : savedUserCredentials){
-            String encodedKey = singleCredential.getKey();
-            String encryptedPassword = singleCredential.getPassword();
-            String decryptedPassword = encryptionService.decryptValue(encryptedPassword, encodedKey);
-
-            // Set Password of current credential to plain text Password
-            singleCredential.setPassword(decryptedPassword);
-
-            userCredentials.add(singleCredential);
-        }
-
-        return userCredentials;
+        return this.credentialMapper.getCredentialsByUsername(userID); // This is what we get from the DB
     }
 
 
