@@ -6,6 +6,7 @@ import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -64,7 +65,8 @@ public class CredentialsUserTest {
         homePage.clickCredentialSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToCredentials();
@@ -88,7 +90,8 @@ public class CredentialsUserTest {
         homePage.clickCredentialSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToCredentials();
@@ -102,8 +105,11 @@ public class CredentialsUserTest {
         homePage.setCredentialUrlField("https://localhost");
         homePage.setCredentialPasswordField("Pa$$w0rd");
         homePage.clickCredentialSubmit();
-        this.driverWait.until(ExpectedConditions.elementToBeClickable(By.id("back-to-home-from-success")));
-        homePage.clickGoBackHome();
+
+        Assertions.assertEquals("Result", driver.getTitle());
+        WebElement backHomeBtn2 = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn2);
+
         homePage.navigateToCredentials();
 
 
@@ -126,7 +132,8 @@ public class CredentialsUserTest {
         homePage.clickCredentialSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToCredentials();
@@ -144,7 +151,6 @@ public class CredentialsUserTest {
         this.signupProcess();
         this.loginProcess();
     }
-
     private void signupProcess(){
         String username = "TEST_USER";
         String password = "Pa$$w0rd";
@@ -158,12 +164,10 @@ public class CredentialsUserTest {
         signupPage.setInputUsername(username);
         signupPage.setInputPassword(password);
         signupPage.submitForm();
-        this.driverWait.until(ExpectedConditions.elementToBeClickable(signupPage.getLoginLink()));
-        Assertions.assertEquals("You successfully signed up! Please continue to the login page.", signupPage.getSuccessMsg());
-        signupPage.goToLogin(); //TODO: Works on time and it does not ten other times??? FIX IT
 
         this.driverWait.until(ExpectedConditions.titleContains("Login"));
         Assertions.assertEquals("Login", driver.getTitle());
+        Assertions.assertEquals("You successfully signed up!", this.driver.findElement(By.id("successMsg")).getAttribute("innerText"));
     }
     private void loginProcess(){
         String username = "TEST_USER";

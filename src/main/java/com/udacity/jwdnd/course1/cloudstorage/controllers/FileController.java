@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controllers;
 
+import com.udacity.jwdnd.course1.cloudstorage.CustomErrors;
 import com.udacity.jwdnd.course1.cloudstorage.models.File;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,7 +38,7 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication)  {
+    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication authentication, RedirectAttributes redirectAttributes)  {
 
         String usernameOfCurrentUser = (String) authentication.getPrincipal();
         Integer idOfCurrentUser = this.userService.getUserID(usernameOfCurrentUser);
@@ -44,36 +46,51 @@ public class FileController {
         // check if file is empty
         if (fileUpload.isEmpty()) {
             logger.error("ERROR: File is empty!");
-            return "redirect:/result?isSuccess=" + false + "&errorType=" + 1;
-        }
-
-        String fileName = fileUpload.getOriginalFilename();
-
-        if(!this.fileService.isFileNameAvailableForUser(idOfCurrentUser, fileName)) {
+            redirectAttributes.addFlashAttribute("errorAlertMessage", CustomErrors.UI_ERROR_FILE_IS_EMPTY);
+            redirectAttributes.addFlashAttribute("errorMsgActive", true);
+            redirectAttributes.addFlashAttribute("successMsgActive", false);
+            return "redirect:/result";
+        }  else if(!this.fileService.isFileNameAvailableForUser(idOfCurrentUser, fileUpload.getOriginalFilename())) {
             logger.error("ERROR: A file with same name already exists!");
-            return "redirect:/result?isSuccess=" + false + "&errorType=" + 1;
+            redirectAttributes.addFlashAttribute("errorAlertMessage", CustomErrors.UI_ERROR_FILE_ALREADY_EXISTS);
+            redirectAttributes.addFlashAttribute("errorMsgActive", true);
+            redirectAttributes.addFlashAttribute("successMsgActive", false);
+            return "redirect:/result";
+        } else {
+            try {
+                this.fileService.saveFile(fileUpload, usernameOfCurrentUser);
+                redirectAttributes.addFlashAttribute("successAlertMessage", "File was saved successfully.");
+                redirectAttributes.addFlashAttribute("errorMsgActive", false);
+                redirectAttributes.addFlashAttribute("successMsgActive", true);
+            } catch (IOException e) {
+                logger.error("ERROR: Error while saving file!");
+                e.printStackTrace();
+                redirectAttributes.addFlashAttribute("errorAlertMessage", CustomErrors.UI_ERROR_GENERAL);
+                redirectAttributes.addFlashAttribute("errorMsgActive", true);
+                redirectAttributes.addFlashAttribute("successMsgActive", false);
+            }
+            return "redirect:/result";
         }
-
-        try {
-            this.fileService.saveFile(fileUpload, usernameOfCurrentUser);
-        } catch (IOException e) {
-            logger.error("ERROR: Error while saving file!");
-            e.printStackTrace();
-        }
-
-        return "redirect:/result?isSuccess=" + true;
     }
 
     @GetMapping("/delete")
-    public String deleteFile(@RequestParam(required = false, name = "fileid") Integer fileId) {
+    public String deleteFile(@RequestParam(required = false, name = "fileid") Integer fileId, RedirectAttributes redirectAttributes) {
         Boolean isSuccess = this.fileService.deleteFile(fileId);
 
-        if (isSuccess)
+        if (isSuccess){
             logger.info("INFO: File deleted successfully!");
-        else
+            redirectAttributes.addFlashAttribute("successAlertMessage", "File deleted successfully!");
+            redirectAttributes.addFlashAttribute("errorMsgActive", false);
+            redirectAttributes.addFlashAttribute("successMsgActive", true);
+        }
+        else {
             logger.error("ERROR: Error while deleting file");
+            redirectAttributes.addFlashAttribute("errorAlertMessage", CustomErrors.UI_ERROR_FILE_DELETION_FAILED);
+            redirectAttributes.addFlashAttribute("errorMsgActive", true);
+            redirectAttributes.addFlashAttribute("successMsgActive", false);
+        }
 
-        return "redirect:/result?isSuccess=" + isSuccess;
+        return "redirect:/result";
     }
 
     @GetMapping("/download")
