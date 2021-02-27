@@ -1,21 +1,15 @@
 package com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import java.util.List;
-
 public class HomePage {
 
     @FindBy(id = "logoutBtn")
     private WebElement logoutButton;
-
-    @FindBy(id = "back-to-home-from-success")
-    private WebElement backHomeFromResult;
 
     @FindBy(id = "nav-notes-tab")
     private WebElement navNoteTab;
@@ -89,10 +83,6 @@ public class HomePage {
 
     public void clickLogout(){
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", logoutButton);
-    }
-
-    public void clickGoBackHome(){
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeFromResult);
     }
 
     public void clickNoteSubmit(){

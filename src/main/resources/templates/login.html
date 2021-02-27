@@ -15,6 +15,7 @@
         <div th:if="${errorOccurred}" class="alert alert-danger" id="invalidMessage">
             Invalid username or password
         </div>
+        <span id="successMsg" style="color:green" th:text="${SignupSuccessMessage}"></span>
         <div class="alert alert-dark" id="validLogoutMessage" th:if="${isLoggedOut}">
             You have been logged out
         </div>

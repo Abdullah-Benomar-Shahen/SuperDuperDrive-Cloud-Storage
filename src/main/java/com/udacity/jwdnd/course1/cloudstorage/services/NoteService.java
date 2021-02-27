@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.services;
 import com.udacity.jwdnd.course1.cloudstorage.mappers.NoteMapper;
 import com.udacity.jwdnd.course1.cloudstorage.models.Note;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -12,6 +13,17 @@ public class NoteService {
 
     public NoteService(NoteMapper noteMapper) {
         this.noteMapper = noteMapper;
+    }
+
+    /**
+     * Check if Note Title available for current user.
+     *
+     * @param userid   the userid
+     * @param noteTitle Note Title
+     * @return the boolean
+     */
+    public Boolean isNoteTitleAvailable(Integer userid, String noteTitle) {
+        return this.noteMapper.getNotesByNoteTitleAndUserID(noteTitle, userid).isEmpty();
     }
 
     /**

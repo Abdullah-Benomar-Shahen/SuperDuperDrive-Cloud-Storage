@@ -3,15 +3,15 @@ package com.udacity.jwdnd.course1.cloudstorage.UserTests;
 import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.HomePage;
 import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.LoginPage;
 import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.*;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -140,12 +140,10 @@ public class AccessUserTest {
         signupPage.setInputUsername(username);
         signupPage.setInputPassword(password);
         signupPage.submitForm();
-        this.driverWait.until(ExpectedConditions.elementToBeClickable(signupPage.getLoginLink()));
-        Assertions.assertEquals("You successfully signed up! Please continue to the login page.", signupPage.getSuccessMsg());
-        signupPage.goToLogin();
 
         this.driverWait.until(ExpectedConditions.titleContains("Login"));
         Assertions.assertEquals("Login", driver.getTitle());
+        Assertions.assertEquals("You successfully signed up!", this.driver.findElement(By.id("successMsg")).getAttribute("innerText"));
     }
 
     private void loginProcess(){
@@ -164,13 +162,4 @@ public class AccessUserTest {
 
         this.driverWait.until(ExpectedConditions.titleContains("Home"));
     }
-
-
-
-
-
-
-
-
-
 }

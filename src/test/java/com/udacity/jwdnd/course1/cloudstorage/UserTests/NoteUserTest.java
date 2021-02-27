@@ -6,6 +6,7 @@ import com.udacity.jwdnd.course1.cloudstorage.UserTests.Pages.SignupPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -64,7 +65,8 @@ public class NoteUserTest {
         homePage.clickNoteSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToNotes();
@@ -72,7 +74,6 @@ public class NoteUserTest {
         List<WebElement> rows = driver.findElements(By.cssSelector("[class='note-elements']"));
         Assertions.assertEquals(1, rows.size());
     }
-
 
     @Test
     @Order(2)
@@ -89,7 +90,8 @@ public class NoteUserTest {
         homePage.clickNoteSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToNotes();
@@ -103,7 +105,11 @@ public class NoteUserTest {
         this.driver.findElement(By.id("note-title")).clear();
         homePage.setNoteTitleField("TEST NOTE EDITED");
         homePage.clickNoteSubmit();
-        homePage.clickGoBackHome();
+
+        Assertions.assertEquals("Result", driver.getTitle());
+        WebElement backHomeBtn2 = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn2);
+
         homePage.navigateToNotes();
 
         WebElement updatedNoteTitle = this.driver.findElement(By.xpath("//*[@id=\"notesTable\"]/tbody/tr/th"));
@@ -125,7 +131,8 @@ public class NoteUserTest {
         homePage.clickNoteSubmit();
 
         Assertions.assertEquals("Result", driver.getTitle());
-        homePage.clickGoBackHome();
+        WebElement backHomeBtn = this.driver.findElement(By.cssSelector("[class='btn btn-primary btn-sm']"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", backHomeBtn);
 
         Assertions.assertEquals("Home", driver.getTitle());
         homePage.navigateToNotes();
@@ -144,7 +151,6 @@ public class NoteUserTest {
         this.signupProcess();
         this.loginProcess();
     }
-
     private void signupProcess(){
         String username = "TEST_USER";
         String password = "Pa$$w0rd";
@@ -158,12 +164,10 @@ public class NoteUserTest {
         signupPage.setInputUsername(username);
         signupPage.setInputPassword(password);
         signupPage.submitForm();
-        this.driverWait.until(ExpectedConditions.elementToBeClickable(signupPage.getLoginLink()));
-        Assertions.assertEquals("You successfully signed up! Please continue to the login page.", signupPage.getSuccessMsg());
-        signupPage.goToLogin(); //TODO: Works on time and it does not ten other times??? FIX IT
 
         this.driverWait.until(ExpectedConditions.titleContains("Login"));
         Assertions.assertEquals("Login", driver.getTitle());
+        Assertions.assertEquals("You successfully signed up!", this.driver.findElement(By.id("successMsg")).getAttribute("innerText"));
     }
     private void loginProcess(){
         String username = "TEST_USER";
