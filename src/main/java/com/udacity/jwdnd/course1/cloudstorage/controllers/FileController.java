@@ -12,10 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @Controller
+@ControllerAdvice
 @RequestMapping("/files")
 public class FileController {
 
@@ -71,6 +70,15 @@ public class FileController {
             }
             return "redirect:/result";
         }
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public String handleFileSizeExceededError(RedirectAttributes redirectAttributes){
+        logger.error("ERROR: File size exceeded the limit of 5MB");
+        redirectAttributes.addFlashAttribute("errorAlertMessage", CustomErrors.UI_ERROR_FILE_IS_LARGE);
+        redirectAttributes.addFlashAttribute("errorMsgActive", true);
+        redirectAttributes.addFlashAttribute("successMsgActive", false);
+        return "redirect:/result";
     }
 
     @GetMapping("/delete")
